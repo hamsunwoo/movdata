@@ -84,10 +84,10 @@ def save_movies_info():
         #연도별로 영화상세정보 리스트에 다 저장
         movie_info_by_year[year].append(movie_info)
 
-        #데이터를 연도별로  json 파일로 저장
-        for year, movie_info_list in movie_info_by_year.items():
-            file_path = f"{home_path}/data/movies/year={year}/movie_info.json"
-            save_json(movie_info_list, file_path)
-            print(f"영화 정보를 저장했습니다: {year}년 {code}")
+    #데이터를 연도별로  json 파일로 저장
+    for year, movie_info_list in movie_info_by_year.items():
+        file_path = f"{home_path}/data/movies/year={year}/movie_info.json"
+        save_json(movie_info_list, file_path)
+        print(f"영화 정보를 저장했습니다: {year}년 {code}")
     
     return True
