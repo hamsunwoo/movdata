@@ -20,17 +20,17 @@ def extract_movie_list_json(movieCd):
         movie_list_path=f"{home_path}/data/movies/year={year}/data.json"
 
 
-    #MovieList JSON 파일 열기
-    if os.path.exists(movie_list_path):
-        with open(movie_list_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
+        #MovieList JSON 파일 열기
+        if os.path.exists(movie_list_path):
+            with open(movie_list_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
     
-        #JSON파일에서 MovieCd 추출하기
-        for key in data:
-            if movieCd in key:
-                all_moviecd.append({"year": year, "movieCd": key[movieCd]})
-    else:
-        print(f"{movie_list_path} 파일이 존재하지 않습니다.")
+            #JSON파일에서 MovieCd 추출하기
+            for key in data:
+                if movieCd in key:
+                    all_moviecd.append({"year": year, "movieCd": key[movieCd]})
+        else:
+            print(f"{movie_list_path} 파일이 존재하지 않습니다.")
     
     return all_moviecd
 
@@ -54,7 +54,7 @@ def req(url):
 def save_movies_info():
     movie_code_key = 'movieCd'
     extract_movie_code = extract_movie_list_json(movie_code_key)
-    
+
     movie_info_by_year = {}
 
     for key in tqdm(extract_movie_code):
@@ -84,10 +84,14 @@ def save_movies_info():
         #연도별로 영화상세정보 리스트에 다 저장
         movie_info_by_year[year].append(movie_info)
 
-    #데이터를 연도별로  json 파일로 저장
-    for year, movie_info_list in movie_info_by_year.items():
-        file_path = f"{home_path}/data/movies/year={year}/movie_info.json"
-        save_json(movie_info_list, file_path)
-        print(f"영화 정보를 저장했습니다: {year}년 {code}")
-    
+        #데이터를 연도별로  json 파일로 저장
+        for year, movie_info_list in movie_info_by_year.items():
+            file_path = f"{home_path}/data/movies/year={year}/movie_info.json"
+            save_json(movie_info_list, file_path)
+            
+            print(f"영화 정보를 저장했습니다: {year}년 {code}")
+     
+        
     return True
+
+save_movies_info()
