@@ -20,25 +20,19 @@ def req(url):
     j = r.json()
     return j
 
-def save_movies(start_year=2014, end_year=2021, sleep_time=1):
-    all_data = [] 
-
+def save_movies(year, sleep_time=1):
     #연도별 저장
-    for year in range(start_year, end_year + 1):
-        home_path = os.path.expanduser("~")
-        file_path = f"{home_path}/data/movies_pagelimit/year={year}/data.json"
+    home_path = os.path.expanduser("~")
+    file_path = f"{home_path}/data/movies_pagelimit/year={year}/data.json"
     
-        #위 경로가 있으면 API 호출을 멈추고 프로그램 종료
-        if os.path.exists(file_path):
-            print(f"파일이 이미 존재합니다. (연도: {year})")
-            continue
-        else:
-            print(f"데이터를 저장합니다. (연도: {year})")
+    #위 경로가 있으면 API 호출을 멈추고 프로그램 종료
+    if os.path.exists(file_path):
+        print(f"파일이 이미 존재합니다. (연도: {year})")
+        continue
+    else:
+        print(f"데이터를 저장합니다. (연도: {year})")
         
-        url_base = f"https://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key={API_KEY}&openStartDt={year}&openEndDt={year}"
-        r = req(url_base)
-        d = r['movieListResult']['movieList']
-        all_data.extend(d)
-        
-
-    return all_data
+    url_base = f"https://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key={API_KEY}&openStartDt={year}&openEndDt={year}"
+    r = req(url_base)
+    d = r['movieListResult']['movieList']
+    return d
