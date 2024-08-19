@@ -21,7 +21,7 @@ def req(url):
     return j
 
 def save_movies(start_year=2014, end_year=2021, sleep_time=1):
-    all_data = []
+    all_data = [] 
 
     #연도별 저장
     for year in range(start_year, end_year + 1):
@@ -35,7 +35,6 @@ def save_movies(start_year=2014, end_year=2021, sleep_time=1):
         else:
             print(f"데이터를 저장합니다. (연도: {year})")
         
-
         url_base = f"https://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key={API_KEY}&openStartDt={year}&openEndDt={year}"
         r = req(url_base)
         d = r['movieListResult']['movieList']
@@ -43,5 +42,5 @@ def save_movies(start_year=2014, end_year=2021, sleep_time=1):
 
         #데이터 json파일로 저장
         save_json(all_data, file_path)
-    
+
     return all_data
