@@ -42,7 +42,8 @@ def save_movies(start_year=2014, end_year=2021, per_page=10, sleep_time=1):
 
         #total_pages 만큼 loop 돌면서 API 호출
         all_data = []
-
+        
+        #for page in tqdm(range(1, total_pages + 1)):
         for page in tqdm(range(1, total_pages + 1)):
             time.sleep(sleep_time)
             r = req(url_base + f"&curPage={page}")

@@ -15,7 +15,7 @@ def extract_movie_list_json(movieCd):
 
     #모든 연도의 movieCd를 저장할 리스트
     all_moviecd = []
-
+    year_moviecd = []
     for year in range(start_year, end_year + 1):
         movie_list_path=f"{home_path}/data/movies/year={year}/data.json"
 
@@ -28,9 +28,13 @@ def extract_movie_list_json(movieCd):
             #JSON파일에서 MovieCd 추출하기
             for key in data:
                 if movieCd in key:
-                    all_moviecd.append({"year": year, "movieCd": key[movieCd]})
+                    year_moviecd.append({"year": year, "movieCd": key[movieCd]})
+            
+            all_moviecd.append(year_moviecd)
+            year_moviecd = []
         else:
             print(f"{movie_list_path} 파일이 존재하지 않습니다.")
+    
     
     return all_moviecd
 
@@ -54,42 +58,39 @@ def req(url):
 def save_movies_info():
     movie_code_key = 'movieCd'
     extract_movie_code = extract_movie_list_json(movie_code_key)
+    # extract_movie_code = [[],[],[],[],[],[]]
+    movie_detail_info = []
 
-    movie_info_by_year = {}
+    global count_increase
+    count_increase = 0
 
     for key in tqdm(extract_movie_code):
-        year = key['year']
-        code = key['movieCd']
-        home_path = os.path.expanduser("~")
-        file_path = f"{home_path}/data/movies/year={year}/movie_info.json"
-    
-        #영화 정보가 이미 연도의 movie_info.json에 저장되어 있는지 확인
-        if year not in movie_info_by_year:
-            movie_info_by_year[year] = []
-
-            #기존 movie_info.json이 존재하면 로드
-            if os.path.exists(file_path):
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    movie_info_by_year[year] = json.load(f)
-       
-       #중복 확인(이미 저장된 movieCd인지 확인)
-        if any(movie.get('movieCd') == code for movie in movie_info_by_year[year]):
-           print(f"영화 정보가 이미 존재합니다: {year}년 {code}")
-           continue
-
-        #API 호출
-        url_base = f"http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key={API_KEY}&movieCd={code}"
-        movie_info = req(url_base).get('movieInfoResult', {}).get('movieInfo', {})
         
+        for year, code in key:
+            home_path = os.path.expanduser("~")
+            file_path = f"{home_path}/data/movies/year={year}/movie_info.json"
+            movie_info_by_year = {}    
+            for year, code in key:
+                movie_info_by_year[code] = True
+            # 중복체크
+            if code not in movie_info_by_year:
+                movie_info_by_year[code] = True
+            else:
+                continue
+        #API 호출
+            url_base = f"http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key={API_KEY}&movieCd={code}"
+            movie_info = req(url_base).get('movieInfoResult', {}).get('movieInfo', {})
+                
         #연도별로 영화상세정보 리스트에 다 저장
-        movie_info_by_year[year].append(movie_info)
+            movie_detail_info.append(movie_info)
 
         #데이터를 연도별로  json 파일로 저장
-        for year, movie_info_list in movie_info_by_year.items():
-            file_path = f"{home_path}/data/movies/year={year}/movie_info.json"
-            save_json(movie_info_list, file_path)
-            
+        for year in movie_detail_info:
+            file_path = f"{home_path}/data/movies/year={int(2015+count_increase)}/movie_info.json"
+            save_json(movie_detail_info, file_path)
             print(f"영화 정보를 저장했습니다: {year}년 {code}")
+            count_increase += 1
+        movie_detail_info = []
      
         
     return True
