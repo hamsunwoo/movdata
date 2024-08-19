@@ -28,7 +28,7 @@ def save_movies(year, sleep_time=1):
     #위 경로가 있으면 API 호출을 멈추고 프로그램 종료
     if os.path.exists(file_path):
         print(f"파일이 이미 존재합니다. (연도: {year})")
-        continue
+        return []
     else:
         print(f"데이터를 저장합니다. (연도: {year})")
         
