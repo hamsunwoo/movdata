@@ -27,3 +27,4 @@ pythonpath = "src"
 
 [project.scripts]
 movdata-ping = "movdata.cli:ping"
+movdata-list = "movdata.ml:save_json"
