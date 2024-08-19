@@ -39,8 +39,6 @@ def save_movies(start_year=2014, end_year=2021, sleep_time=1):
         r = req(url_base)
         d = r['movieListResult']['movieList']
         all_data.extend(d)
-
-        #데이터 json파일로 저장
-        save_json(all_data, file_path)
+        
 
     return all_data
